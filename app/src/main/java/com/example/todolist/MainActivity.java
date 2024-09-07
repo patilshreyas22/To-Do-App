@@ -45,18 +45,32 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(arrayAdapter);
 
-        add.setOnClickListener(new View.OnClickListener(){
-
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                String itemName = item.getText().toString();
-                itemList.add(itemName);
-                item.setText("");
-                FileHelper.writeData(itemList , getApplicationContext());
-                arrayAdapter.notifyDataSetChanged();
-
+            public void onClick(View v) {
+                String itemName = item.getText().toString().trim();
+                if (itemName.isEmpty()) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                    alert.setTitle("Error");
+                    alert.setMessage("No item found , please enter an item before adding to the list.");
+                    alert.setCancelable(false);
+                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = alert.create();
+                    alertDialog.show();
+                } else {
+                    itemList.add(itemName);
+                    item.setText("");
+                    FileHelper.writeData(itemList, getApplicationContext());
+                    arrayAdapter.notifyDataSetChanged();
+                }
             }
         });
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
